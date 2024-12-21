@@ -44,7 +44,8 @@ function ExpenseList() {
     };
 
     const handleDelete = (id: number | undefined, title: string | undefined) => {
-        setExpenses((expensesData: dataType[]) => expensesData.filter((expense: dataType) => expense.id !== id));
+        const newExpenses = expensesData.filter((expense: dataType) => expense.id !== id);
+        setExpenses(newExpenses);
         toast({
             title: "Expense deleted successfully",
             description: `Your expense "${title}" has been deleted successfully`,
@@ -68,8 +69,8 @@ function ExpenseList() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {currentExpenses.map((expense, index) => (
-                            <TableRow key={index} className='hover:bg-slate-300 '>
+                        {currentExpenses.map((expense) => (
+                            <TableRow key={expense.id} className='hover:bg-slate-300 '>
                                 <TableCell>{expense.title}</TableCell>
                                 <TableCell>{expense.amount}</TableCell>
                                 <TableCell className='cursor-pointer'>
