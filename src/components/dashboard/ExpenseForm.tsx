@@ -16,39 +16,78 @@ import { Calendar } from "@/components/ui/calendar"
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ExpenseContext } from '@/App'
+import dataType from '@/data/type'
+import { Close } from '@radix-ui/react-dialog'
+import { useToast } from '@/hooks/use-toast'
 
 type ExpenseFormValues = {
-    title: string
-    amount: number
-    date: Date | undefined
+    title: string | undefined
+    amount: number | undefined
+    date: Date
 }
 
 
-const expenseSchema = z.object({
-    title: z.string().min(1, "Title is required"),
-    amount: z.number().min(0.01, "Amount must be greater than 0"),
-    date: z.date().refine((date) => date <= new Date(), "Date cannot be in the future"),
-})
+function ExpenseForm(props: dataType) {
+    const { expenses, setExpenses } = React.useContext(ExpenseContext)
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(props.date)
+    const { toast } = useToast()
 
-function ExpenseForm() {
+    const createExpenseSchema = (props: dataType) =>
+        z.object({
+            title: z.string().min(1, "Title is required").default(() => props.title || ""),
+            amount: z
+                .number()
+                .min(0.01, "Amount must be greater than 0")
+                .default(() => props.amount ?? 0),
+            date: z
+                .date()
+                .refine((date) => date <= new Date(), "Date cannot be in the future")
+                .default(() => props.date || new Date()),
+        })
+
+    const expenseSchema = createExpenseSchema(props)
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<ExpenseFormValues>({
         resolver: zodResolver(expenseSchema),
+        defaultValues: {
+            title: props.title || "",
+            amount: props.amount ?? 0,
+            date: props.date || new Date(),
+        },
     })
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
 
     const onSubmit = (data: ExpenseFormValues) => {
-        console.log(data)
-        // Add your form submission logic here
-    }
 
+        if (props.id === -1) {
+            setExpenses([...expenses, { id: expenses.length + 1, ...data }]);
+            toast({
+                title: "Expense added successfully",
+                description: `Your expense "${data.title}" of amount ${data.amount} has been added successfully`,
+            })
+            setValue("title", "")
+            setValue("amount", 0)
+        } else {
+            const updatedExpenses = expenses.map((expense) => {
+                if (expense.id === props.id) {
+                    return { ...expense, ...data };
+                }
+                return expense;
+            });
+            setExpenses(updatedExpenses);
+            toast({
+                title: "Expense updated successfully",
+                description: `Your expense has been updated successfully`,
+            })
+        }
+    }
 
     return (
         <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>Add Expense</DialogTitle>
+            <DialogHeader >
+                <DialogTitle>{props.id === -1 ? "Add Expense" : "Edit Expense"}</DialogTitle>
                 <DialogDescription>
-                    Add your new expense details!
+                    {props.id === -1 ? "Add your new expense details!" : "Edit your expense details!"}
                 </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,10 +124,11 @@ function ExpenseForm() {
                     </Popover>
                     {errors.date && <p className="text-red-500 text-sm">{errors.date.message}</p>}
                 </div>
-                <Button type="submit" className='mt-4'>Submit</Button>
+                <Close>
+                    <Button type="submit" className='mt-4'>Submit</Button>
+                </Close>
             </form>
         </DialogContent>
-
     )
 }
 

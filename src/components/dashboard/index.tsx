@@ -18,7 +18,12 @@ function Dashboard() {
                 <DialogTrigger asChild>
                     <Button className='fixed bottom-4 left-0 right-0 mx-auto w-fit text-base font-semibold p-5 px-8 bg-black hover:bg-white hover:text-black z-20 border-2 border-black'>Add Expense</Button>
                 </DialogTrigger>
-                <ExpenseForm />
+                <ExpenseForm
+                    id={-1}
+                    title={undefined}
+                    amount={undefined}
+                    date={undefined}
+                />
             </Dialog>
             <Header title="Your Dashboard" class='' />
             <ExpenseStats />
