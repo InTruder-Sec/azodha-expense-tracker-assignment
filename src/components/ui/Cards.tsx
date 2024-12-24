@@ -1,4 +1,3 @@
-import { DollarSignIcon } from 'lucide-react'
 import React from 'react'
 
 type CardsProps = {

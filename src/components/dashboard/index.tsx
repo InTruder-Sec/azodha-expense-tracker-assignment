@@ -1,4 +1,3 @@
-import React from 'react'
 import ExpenseStats from './ExpenseStats'
 import ExpenseList from './ExpenseList'
 import {

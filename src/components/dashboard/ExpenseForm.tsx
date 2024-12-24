@@ -1,4 +1,4 @@
-import React from 'react'
+import { useContext } from 'react'
 import {
     DialogContent,
     DialogDescription,
@@ -29,7 +29,8 @@ type ExpenseFormValues = {
 
 
 function ExpenseForm(props: dataType) {
-    const { expenses, setExpenses } = React.useContext(ExpenseContext)
+    const context = useContext(ExpenseContext)
+    const { expenses, setExpenses } = context || { expenses: [], setExpenses: () => { } };
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(props.date)
     const { toast } = useToast()
 
@@ -60,7 +61,8 @@ function ExpenseForm(props: dataType) {
     const onSubmit = (data: ExpenseFormValues) => {
 
         if (props.id === -1) {
-            setExpenses([...expenses, { id: expenses.length + 1, ...data }]);
+            const lastExpenseId = expenses.slice(-1)[0]?.id || 1;
+            setExpenses([...expenses, { id: lastExpenseId + 1, ...data }]);
             toast({
                 title: "Expense added successfully",
                 description: `Your expense "${data.title}" of amount ${data.amount} has been added successfully`,
@@ -68,7 +70,7 @@ function ExpenseForm(props: dataType) {
             setValue("title", "")
             setValue("amount", 0)
         } else {
-            const updatedExpenses = expenses.map((expense) => {
+            const updatedExpenses = expenses.map((expense: dataType) => {
                 if (expense.id === props.id) {
                     return { ...expense, ...data };
                 }
@@ -116,7 +118,7 @@ function ExpenseForm(props: dataType) {
                                 selected={selectedDate}
                                 onSelect={(date) => {
                                     setSelectedDate(date)
-                                    setValue("date", date)
+                                    setValue("date", date || new Date())
                                 }}
                                 initialFocus
                             />
