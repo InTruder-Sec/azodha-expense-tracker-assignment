@@ -5,8 +5,9 @@ import { ExpenseContext } from '@/App'
 import { DollarSignIcon } from 'lucide-react'
 
 function ExpenseStats() {
+  const context = React.useContext(ExpenseContext)
 
-  const { expenses } = React.useContext(ExpenseContext)
+  const { expenses } = context || { expenses: [] }
 
   // Generate total monthly expenses, total transactions, average transaction amount and highest transaction amount
   const stats = {

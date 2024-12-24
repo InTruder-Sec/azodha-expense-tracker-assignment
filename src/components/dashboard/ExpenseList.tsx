@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import {
     Table,
     TableBody,
@@ -31,8 +31,8 @@ const ITEMS_PER_PAGE = 10;
 
 function ExpenseList() {
     const [currentPage, setCurrentPage] = useState(1);
-    const expensesData: dataType[] = useContext(ExpenseContext).expenses;
-    const setExpenses = useContext(ExpenseContext).setExpenses as React.Dispatch<React.SetStateAction<dataType[]>>;
+    const context = useContext(ExpenseContext);
+    const { expenses: expensesData, setExpenses } = context || { expenses: [], setExpenses: () => { } };
     const { toast } = useToast();
 
     const handleNextPage = () => {
