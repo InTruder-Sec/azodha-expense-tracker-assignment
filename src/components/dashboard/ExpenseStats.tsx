@@ -9,7 +9,7 @@ function ExpenseStats() {
 
   const { expenses } = context || { expenses: [] }
 
-  // Generate total monthly expenses, total transactions, average transaction amount and highest transaction amount
+
   const stats = {
     totalMonthlyExpenses: 0,
     totalTransactions: 0,
@@ -17,7 +17,7 @@ function ExpenseStats() {
     highestTransactionAmount: 0
   }
 
-  // Calculate expenses for the current month
+
   const currentMonth = new Date().getMonth() + 1
   expenses.forEach((expense) => {
     const expenseMonth = expense.date ? new Date(expense.date).getMonth() + 1 : 0;

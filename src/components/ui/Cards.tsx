@@ -4,7 +4,7 @@ type CardsProps = {
   title: string
   amount: number | string
   logo: React.ReactNode
-  description?: string
+  description: string
 }
 
 function Cards(props: CardsProps) {
