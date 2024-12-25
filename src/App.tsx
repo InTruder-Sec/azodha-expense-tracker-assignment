@@ -22,7 +22,7 @@ function App() {
   return (
     <ExpenseContext.Provider value={{ expenses, setExpenses }}>
       <Navbar />
-      <div className="text-4xl mt-20">
+      <div className="mt-20">
         <Dashboard />
       </div>
       <Footer />
